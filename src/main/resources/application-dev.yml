@@ -12,6 +12,15 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate:
+       enable_lazy_load_no_trans: true
+       temp:
+         use_jdbc_metadata_defaults: false
+       jdbc:
+         time_zone: UTC
+         lob:
+           non_contextual_creation: true
   h2:
     console:
       enabled: true
@@ -31,6 +40,7 @@ app:
     secret: mySecret
     expiration: 604800
     route-authentication-path: /auth/login
+    route-authentication-refresh: /auth/refresh
   pagination:
     default-page-num: 0
     default-elements-per-page: 20

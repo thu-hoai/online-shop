@@ -8,7 +8,7 @@
 --     CONNECTION LIMIT = -1;
 
 -- user
-CREATE TABLE public.user (
+CREATE TABLE public.t_user (
 	user_id bigint NOT NULL,
 	user_name character varying(50),
     first_name character varying(255),
@@ -27,13 +27,13 @@ CREATE SEQUENCE public.user_user_id_seq
 	NO MAXVALUE
 	CACHE 1;
 
-ALTER SEQUENCE public.user_user_id_seq OWNED BY public.user.user_id;
-ALTER TABLE ONLY public.user ALTER COLUMN user_id SET DEFAULT nextval('user_user_id_seq'::regclass);
-ALTER TABLE ONLY public.user ADD CONSTRAINT user_pkey PRIMARY KEY (user_id);
-INSERT INTO public."user"(
+ALTER SEQUENCE public.user_user_id_seq OWNED BY public.t_user.user_id;
+ALTER TABLE ONLY public.t_user ALTER COLUMN user_id SET DEFAULT nextval('user_user_id_seq'::regclass);
+ALTER TABLE ONLY public.t_user ADD CONSTRAINT user_pkey PRIMARY KEY (user_id);
+INSERT INTO public.t_user(
 	user_name, first_name, last_name, user_address, phone, user_enabled, email, user_password)
-	VALUES ('username1', 'firstName1', 'lastName1', 'Ho Chi Minh City', '+84912345667', true, 'username1@gmail.com', '$2a$10$qJvkQYc2PjVwEXsRS0VEq.bedlRlPwssYSi.J/U6tAn77plRGSt.a');
-INSERT INTO public."user"(
+	VALUES ('username1', 'firstName1', 'lastName1', 'Ho Chi Minh City', '+84912345667', true, 'username1@gmail.com', '$2a$12$15l7DQ2/9CBGrLzTonbx6unOaoWRUo0WngLEhQ/LjexOtgMvuIRNm');
+INSERT INTO public.t_user(
 	user_name, first_name, last_name, user_address, phone, user_enabled, email)
 	VALUES ('username2', 'firstName2', 'lastName2', 'Ho Chi Minh City', '+84912345666', true, 'username1@gmail.com');
 
@@ -70,7 +70,7 @@ CREATE TABLE public.user_role (
 );
 
 ALTER TABLE ONLY public.user_role
-    ADD CONSTRAINT fk_user__reference_user FOREIGN KEY (user_id) REFERENCES public.user(user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+    ADD CONSTRAINT fk_user__reference_user FOREIGN KEY (user_id) REFERENCES public.t_user(user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public.user_role
     ADD CONSTRAINT fk_user__reference_role FOREIGN KEY (role_id) REFERENCES public.role(role_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
@@ -117,7 +117,7 @@ ALTER TABLE ONLY public.user_payment
 ALTER TABLE ONLY public.user_payment
     ADD CONSTRAINT fk_user_payment__ref_payment_code FOREIGN KEY (ref_payment_code_payment_code) REFERENCES public.ref_payment_code(payment_code)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public.user_payment
-    ADD CONSTRAINT fk_user_payment__user FOREIGN KEY (user_user_id) REFERENCES public.user(user_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
+    ADD CONSTRAINT fk_user_payment__user FOREIGN KEY (user_user_id) REFERENCES public.t_user(user_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 INSERT INTO public.user_payment(
 	ref_payment_code_payment_code, user_user_id)
@@ -145,7 +145,8 @@ CREATE TABLE public.product (
     category_code character varying(50),
     product_name character varying(255),
     price decimal(10, 2),
-    product_description character varying(512)
+    product_description character varying(512),
+    stock int;
 );
 CREATE SEQUENCE public.product_product_id_seq
     START WITH 1
@@ -164,14 +165,14 @@ ALTER TABLE ONLY public.product
     ADD CONSTRAINT fk_product__ref_product_category FOREIGN KEY (category_code) REFERENCES public.ref_product_category(category_code)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 INSERT INTO public.product(
-	category_code, product_name, price, product_description)
-	VALUES ('BK', 'Fountainhead', 100.1, 'A novel');
+	category_code, product_name, price, product_description, stock)
+	VALUES ('BK', 'Fountainhead', 100, 'A novel', 20);
 INSERT INTO public.product(
-	category_code, product_name, price, product_description)
-	VALUES ('BK', 'Core Java', 50, 'Learning');
+	category_code, product_name, price, product_description, stock)
+	VALUES ('BK', 'Core Java', 50, 'Learning', 30);
 INSERT INTO public.product(
-	category_code, product_name, price, product_description)
-	VALUES ('FD', 'Pizza', 20, 'Fast food 1');
+	category_code, product_name, price, product_description, stock)
+	VALUES ('FD', 'Pizza', 20, 'Fast food 1', 100);
 
 -- ref order item status
 CREATE TABLE public.ref_order_item_status (
@@ -210,11 +211,12 @@ INSERT INTO public.ref_order_status(
 	VALUES ('CML', 'Completed order');
 
 -- order
-CREATE TABLE public.order (
+CREATE TABLE public.t_order (
     order_id bigint NOT NULL,
     user_id bigint NOT NULL,
     order_status_code character varying(50),
-    date_order_placed timestamp without time zone
+    date_order_placed timestamp without time zone,
+    amount decimal(10, 2) default 0.00
 );
 CREATE SEQUENCE public.order_order_id_seq
     START WITH 1
@@ -223,21 +225,21 @@ CREATE SEQUENCE public.order_order_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE ONLY public.order ALTER COLUMN order_id SET DEFAULT nextval('public.order_order_id_seq'::regclass);
+ALTER TABLE ONLY public.t_order ALTER COLUMN order_id SET DEFAULT nextval('public.order_order_id_seq'::regclass);
 
 SELECT pg_catalog.setval('public.order_order_id_seq', 1, false);
 
-ALTER TABLE ONLY public.order
+ALTER TABLE ONLY public.t_order
     ADD CONSTRAINT order_order_id_pkey PRIMARY KEY (order_id);
-ALTER TABLE ONLY public.order
+ALTER TABLE ONLY public.t_order
     ADD CONSTRAINT fk_order__ref_order_status FOREIGN KEY (order_status_code) REFERENCES public.ref_order_status(order_status_code)  ON UPDATE RESTRICT ON DELETE RESTRICT;
-ALTER TABLE ONLY public.order
-    ADD CONSTRAINT fk_order__user FOREIGN KEY (user_id) REFERENCES public.user(user_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE ONLY public.t_order
+    ADD CONSTRAINT fk_order__user FOREIGN KEY (user_id) REFERENCES public.t_user(user_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 
-INSERT INTO public."order"(
+INSERT INTO public.t_order(
 	user_id, order_status_code, date_order_placed)
 	VALUES (2, 'NEW', '2021-11-01');
-INSERT INTO public."order"(
+INSERT INTO public.t_order(
 	user_id, order_status_code, date_order_placed)
 	VALUES (2, 'CML', '2021-10-01');
 
