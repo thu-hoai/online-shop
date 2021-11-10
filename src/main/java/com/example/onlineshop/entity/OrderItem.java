@@ -1,6 +1,7 @@
 package com.example.onlineshop.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "order")
+@Table(name = "order_item")
 @Entity
 public class OrderItem implements Serializable {
 
@@ -48,14 +49,14 @@ public class OrderItem implements Serializable {
 
 	@Column(name = "quantity")
 	private Integer quantity;
-
-	@Column(name = "discount_code")
-	private String discountCode;
+	
+	@Column(name = "price")
+	private BigDecimal price;
 
 	@Override
 	public String toString() {
 		return "OrderItem [id=" + id + ", product=" + product + ", order=" + order + ", orderItemStatus="
-				+ orderItemStatus + ", quantity=" + quantity + ", discountCode=" + discountCode + "]";
+				+ orderItemStatus + ", quantity=" + quantity + "]";
 	}
 
 }

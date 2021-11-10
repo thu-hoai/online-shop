@@ -34,6 +34,7 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
 	private final OrderRepository orderRepository;
 
 	private final UserRepository userRepository;
+
 	private final IOrderMapper orderMapper;
 
 	@Override
@@ -52,13 +53,12 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
 	@Override
 	public OrderDto placeNewEmptyOrder(Long userId) {
 
-		AuthUtils.getAuthorizedUser(userId);
-
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException(String.format("User not found %d", userId)));
 		Order order = Order.builder()
 				.orderStatus(OrderStatus.builder().orderStatusCode(OrderStatusCode.NEW.toString()).build()).user(user)
-				.orderDate(LocalDateTime.now()).build();
+				.orderDate(LocalDateTime.now())
+				.orderAmount(BigDecimal.ZERO).build();
 		return orderMapper.convertToOrderDto(orderRepository.save(order));
 	}
 

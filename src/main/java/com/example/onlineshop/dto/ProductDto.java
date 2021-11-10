@@ -22,4 +22,6 @@ public class ProductDto {
 	private String categoryCode;
 	
 	private BigDecimal price;
+	
+	private Integer productStock;
 }

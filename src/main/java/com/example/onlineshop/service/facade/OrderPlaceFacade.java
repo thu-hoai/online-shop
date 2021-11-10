@@ -1,9 +1,8 @@
-package com.example.onlineshop.service;
+package com.example.onlineshop.service.facade;
 
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import com.example.onlineshop.dto.ItemFormDto;
 import com.example.onlineshop.dto.OrderDto;
@@ -17,7 +16,7 @@ public interface OrderPlaceFacade {
 	/**
 	 * Create a new empty order
 	 */
-	public OrderDto placeNewEmptyOrder(Long userId);
+	public OrderDto placeNewEmptyOrder();
 
 	/**
 	 * Add a new item to the specific order
@@ -25,7 +24,7 @@ public interface OrderPlaceFacade {
 	 * @param itemForm
 	 * @return
 	 */
-	public OrderItemDto addItemToOrder(ItemFormDto itemForm, Long orderId);
+	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId);
 
 	public OrderDto mergeItemToCurrentOrder(ItemFormDto itemForm, Long orderId);
 
@@ -67,5 +66,9 @@ public interface OrderPlaceFacade {
 	public OrderDto checkoutTheOrder(OrderDto orderDto);
 
 	public ProductDto getProductById(Long productId);
+
+	public PageDto<ProductDto> getPaginatedProductByCriteria(Long userId, String searchToken, Pageable pageRequest);
+
+	public ProductDto addProduct(ProductDto productDto);
 
 }

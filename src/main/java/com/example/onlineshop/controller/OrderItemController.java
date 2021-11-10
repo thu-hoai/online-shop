@@ -13,8 +13,8 @@ import com.example.onlineshop.dto.OrderItemDto;
 import com.example.onlineshop.entity.OrderItem;
 import com.example.onlineshop.entity.Product;
 import com.example.onlineshop.service.OrderItemService;
-import com.example.onlineshop.service.OrderPlaceFacade;
 import com.example.onlineshop.service.OrderService;
+import com.example.onlineshop.service.facade.OrderPlaceFacade;
 
 import lombok.AllArgsConstructor;
 
@@ -25,15 +25,5 @@ public class OrderItemController {
 
 	private final OrderPlaceFacade orderPlacingService;
 
-	/**
-	 * Add an product to the current shopping cart
-	 * 
-	 * @param cartDto
-	 * @return
-	 */
-	@PostMapping("/add")
-	public OrderItemDto addToShoppingCart(ItemFormDto cartDto) {
-		return orderPlacingService.addItemToOrder(cartDto, null);
-	}
 
 }

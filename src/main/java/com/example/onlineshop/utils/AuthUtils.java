@@ -26,6 +26,10 @@ public class AuthUtils {
 		}
 		return authentication;
 	}
+	
+	public static JwtUser getCurrentUserLoggedIn() {
+		return (JwtUser) getCurrentLoggedInUserDetails().getPrincipal();
+	}
 
 	public static JwtUser getAuthorizedUser(String username) {
 		JwtUser principal = (JwtUser) getCurrentLoggedInUserDetails().getPrincipal();

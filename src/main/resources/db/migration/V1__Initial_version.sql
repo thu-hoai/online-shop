@@ -146,7 +146,7 @@ CREATE TABLE public.product (
     product_name character varying(255),
     price decimal(10, 2),
     product_description character varying(512),
-    stock int;
+    stock int
 );
 CREATE SEQUENCE public.product_product_id_seq
     START WITH 1
@@ -270,7 +270,7 @@ ALTER TABLE ONLY public.order_item
 ALTER TABLE ONLY public.order_item
     ADD CONSTRAINT fk_order_item__product FOREIGN KEY (product_id) REFERENCES public.product(product_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public.order_item
-    ADD CONSTRAINT fk_order_item__order FOREIGN KEY (order_id) REFERENCES public.order(order_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
+    ADD CONSTRAINT fk_order_item__order FOREIGN KEY (order_id) REFERENCES public.t_order(order_id)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 INSERT INTO public.order_item(
 	product_id, order_id, order_item_status_code, quantity, price)
