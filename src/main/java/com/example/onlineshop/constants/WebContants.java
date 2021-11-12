@@ -9,5 +9,7 @@ public class WebContants {
 	public static final String ORDER_ITEMS = "/order-items";
 	
 	public static final String USERS = "/users";
+	
+	public static final String PRODUCTS = "/products";
 
 }

@@ -15,8 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderItemDto {
 
-	private Long id;
-
 	private Long productId;
 	
 	private BigDecimal price;

@@ -82,7 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 
 				// Permit all /auth/** and /h2-console/**/**
-				.antMatchers("/h2-console/**/**").permitAll()
+				.antMatchers("/swagger-ui/**").permitAll()
 				// .antMatchers("/auth/**", "/oauth2/**").permitAll().
 
 				.antMatchers("/auth/**", "/oauth2/**").permitAll().

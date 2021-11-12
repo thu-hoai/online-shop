@@ -10,6 +10,8 @@ import com.example.onlineshop.dto.OrderItemDto;
 import com.example.onlineshop.dto.PageDto;
 import com.example.onlineshop.dto.ProductDto;
 import com.example.onlineshop.dto.SearchCriteria;
+import com.example.onlineshop.dto.UserDto;
+import com.example.onlineshop.security.dto.JwtUser;
 
 public interface OrderPlaceFacade {
 
@@ -19,14 +21,12 @@ public interface OrderPlaceFacade {
 	public OrderDto placeNewEmptyOrder();
 
 	/**
-	 * Add a new item to the specific order
+	 * Add an item to the specific order
 	 * 
 	 * @param itemForm
 	 * @return
 	 */
 	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId);
-
-	public OrderDto mergeItemToCurrentOrder(ItemFormDto itemForm, Long orderId);
 
 	/**
 	 * Modify the quantity of the specific item
@@ -70,5 +70,15 @@ public interface OrderPlaceFacade {
 	public PageDto<ProductDto> getPaginatedProductByCriteria(Long userId, String searchToken, Pageable pageRequest);
 
 	public ProductDto addProduct(ProductDto productDto);
+
+	public List<JwtUser> findAllUsers();
+
+	public JwtUser findUserById(Long id);
+
+	public JwtUser createUser(UserDto user);
+
+	public void deleteUserById(Long id);
+
+	public JwtUser updateUser(UserDto user);
 
 }

@@ -14,15 +14,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name = "product")
 public class Product implements Serializable {
 

@@ -1,16 +1,14 @@
 package com.example.onlineshop.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -30,17 +28,17 @@ public class OrderItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
+	@EmbeddedId
+	private OrderItemId ids;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
+	@MapsId("productId")
 	private Product product;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
+	@MapsId("orderId")
 	private Order order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -49,13 +47,10 @@ public class OrderItem implements Serializable {
 
 	@Column(name = "quantity")
 	private Integer quantity;
-	
-	@Column(name = "price")
-	private BigDecimal price;
 
 	@Override
 	public String toString() {
-		return "OrderItem [id=" + id + ", product=" + product + ", order=" + order + ", orderItemStatus="
+		return "OrderItem [ids=" + ids + ", product=" + product + ", order=" + order + ", orderItemStatus="
 				+ orderItemStatus + ", quantity=" + quantity + "]";
 	}
 

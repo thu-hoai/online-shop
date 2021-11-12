@@ -37,5 +37,10 @@ public class ProductServiceImpl extends AbstractService<Product> implements Prod
 	public ProductDto addProduct(ProductDto productDto) {
 		return null;
 	}
+	
+	@Override
+	public ProductDto getProductById(Long id) {
+		return null;
+	}
 
 }

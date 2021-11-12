@@ -1,9 +1,9 @@
 package com.example.onlineshop.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,13 +15,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "t_user")
+@Data
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -32,7 +30,7 @@ public class User implements Serializable {
 	private Long id;
 
 	@Column(name = "user_name", length = 50)
-	private String userName;
+	private String username;
 
 	@Column(name = "first_name", length = 255)
 	private String firstName;
@@ -55,8 +53,9 @@ public class User implements Serializable {
 	@Column(name = "user_address", length = 255)
 	private String address;
 
-	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id") })
-	private Set<Role> authorities;
+	private Set<Role> authorities = new HashSet<>();
+
 }

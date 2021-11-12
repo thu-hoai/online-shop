@@ -9,8 +9,8 @@ import com.example.onlineshop.entity.OrderItem;
 @Mapper
 public interface IOrderItemMapper {
 
-	@Mapping(source = "product.productId", target = "productId")
-	@Mapping(source = "order.orderId", target = "orderId")
+	@Mapping(source = "ids.productId", target = "productId")
+	@Mapping(source = "ids.orderId", target = "orderId")
 	@Mapping(source = "orderItemStatus.orderItemStatusCode", target = "status")
 	@Mapping(source = "product.price", target = "price")
 	public OrderItemDto convertToItemDto(OrderItem orderItem);

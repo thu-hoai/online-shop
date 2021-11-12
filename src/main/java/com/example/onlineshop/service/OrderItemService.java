@@ -1,7 +1,5 @@
 package com.example.onlineshop.service;
 
-import com.example.onlineshop.dto.ItemFormDto;
-import com.example.onlineshop.dto.OrderDto;
 import com.example.onlineshop.dto.OrderItemDto;
 
 public interface OrderItemService {
@@ -10,5 +8,4 @@ public interface OrderItemService {
 	
 	void removeOrderItem(Long userId, Long orderItemId);
 
-	OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId);
 }

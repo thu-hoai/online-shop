@@ -30,7 +30,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(final String username) {
 
-		final User user = repository.findByUserName(username);
+		final User user = repository.findByUsername(username);
 
 		if (user != null) {
 			JwtUser jwtUser = mapper.convertToDto(user);

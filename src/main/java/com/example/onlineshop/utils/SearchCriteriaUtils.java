@@ -39,7 +39,6 @@ public class SearchCriteriaUtils {
 		final List<SearchCriteria> criterias = new ArrayList<>();
 		Pattern pattern = getPattern();
 
-//        if (StringUtils.isNotBlank(searchToken)) {
 		if (searchToken != null) {
 			final Matcher matcher = pattern.matcher(searchToken + ",");
 

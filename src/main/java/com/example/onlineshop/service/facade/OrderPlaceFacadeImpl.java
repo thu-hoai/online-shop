@@ -11,6 +11,8 @@ import com.example.onlineshop.dto.OrderItemDto;
 import com.example.onlineshop.dto.PageDto;
 import com.example.onlineshop.dto.ProductDto;
 import com.example.onlineshop.dto.SearchCriteria;
+import com.example.onlineshop.dto.UserDto;
+import com.example.onlineshop.security.dto.JwtUser;
 import com.example.onlineshop.service.OrderItemService;
 import com.example.onlineshop.service.OrderService;
 import com.example.onlineshop.service.ProductService;
@@ -30,7 +32,7 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 
 	private final ProductService productService;
 
-//	private final UserService userUservice;
+	private final UserService userService;
 
 	@Override
 	public OrderDto placeNewEmptyOrder() {
@@ -40,12 +42,14 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 
 	@Override
 	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId) {
-		return orderItemService.addItemToOrder(itemForm, orderId);
+		Long userId = AuthUtils.getCurrentUserLoggedIn().getId();
+		orderService.addItemToOrder(itemForm, orderId);
+		return orderService.getOrderById(userId, orderId);
 	}
 
-	@Override
-	public OrderDto mergeItemToCurrentOrder(ItemFormDto itemForm, Long orderId) {
-		return null;
+	public OrderDto getOrderByOrderId(Long orderId) {
+		Long userId = AuthUtils.getCurrentUserLoggedIn().getId();
+		return orderService.getOrderById(userId, orderId);
 	}
 
 	@Override
@@ -71,7 +75,7 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 
 	@Override
 	public ProductDto getProductById(Long productId) {
-		return null;
+		return productService.getProductById(productId);
 	}
 
 	@Override
@@ -80,7 +84,8 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	}
 
 	@Override
-	public PageDto<ProductDto> getPaginatedProductByCriteria(Long userId, String searchToken, final Pageable pageRequest) {
+	public PageDto<ProductDto> getPaginatedProductByCriteria(Long userId, String searchToken,
+			final Pageable pageRequest) {
 		List<SearchCriteria> criteria = SearchCriteriaUtils.build(searchToken);
 		return productService.getPaginatedProductByCriteria(pageRequest, criteria);
 	}
@@ -88,6 +93,31 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	@Override
 	public ProductDto addProduct(ProductDto productDto) {
 		return productService.addProduct(productDto);
+	}
+
+	@Override
+	public List<JwtUser> findAllUsers() {
+		return userService.findAllUsers();
+	}
+
+	@Override
+	public JwtUser findUserById(Long id) {
+		return userService.findUserById(id);
+	}
+
+	@Override
+	public JwtUser createUser(UserDto user) {
+		return userService.createUser(user);
+	}
+
+	@Override
+	public void deleteUserById(Long id) {
+		userService.deleteUserById(id);
+	}
+
+	@Override
+	public JwtUser updateUser(UserDto user) {
+		return userService.updateUser(user);
 	}
 
 }

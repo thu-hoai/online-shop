@@ -13,5 +13,7 @@ public interface ProductService {
 	PageDto<ProductDto> getPaginatedProductByCriteria(Pageable pageRequest, List<SearchCriteria> criteria);
 	
 	ProductDto addProduct(ProductDto productDto);
+
+	ProductDto getProductById(Long id);
 	
 }
