@@ -42,14 +42,8 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 
 	@Override
 	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId) {
-		Long userId = AuthUtils.getCurrentUserLoggedIn().getId();
 		orderService.addItemToOrder(itemForm, orderId);
-		return orderService.getOrderById(userId, orderId);
-	}
-
-	public OrderDto getOrderByOrderId(Long orderId) {
-		Long userId = AuthUtils.getCurrentUserLoggedIn().getId();
-		return orderService.getOrderById(userId, orderId);
+		return orderService.getOrderById(orderId);
 	}
 
 	@Override
@@ -60,7 +54,6 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	@Override
 	public void removeOrderItem(Long userId, Long orderItemId) {
 		orderItemService.removeOrderItem(userId, orderItemId);
-
 	}
 
 	@Override
@@ -70,7 +63,7 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 
 	@Override
 	public OrderDto getOrderbyId(Long userId, Long orderId) {
-		return orderService.getOrderById(userId, orderId);
+		return orderService.getOrderById(orderId);
 	}
 
 	@Override

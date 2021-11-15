@@ -12,14 +12,8 @@ public class SearchCriteriaUtils {
 
 	private SearchCriteriaUtils() {
 	}
-//    private static final Pattern pattern;
 
-//    static {
-//        pattern = Pattern.compile("(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
-//    }
-//    
 	private static Pattern getPattern() {
-//    	final String operationSetExper = StringUtils.join(SearchOperation.getSimpleOpertaionSet(), "|");
 		StringBuilder stringBuilder = new StringBuilder();
 		for (String str : SearchOperation.getSimpleOpertaionSet()) {
 			stringBuilder.append(str);
