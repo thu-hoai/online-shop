@@ -1,10 +1,10 @@
 package com.example.onlineshop.integration;
 
-import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.transaction.Transactional;
-
+import com.example.onlineshop.TestConstants;
+import com.example.onlineshop.dto.UserDto;
+import com.example.onlineshop.entity.Role;
+import com.example.onlineshop.repository.RoleRepository;
+import com.example.onlineshop.service.facade.OrderPlaceFacadeImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,89 +24,83 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.example.onlineshop.constants.TestConstants;
-import com.example.onlineshop.dto.UserDto;
-import com.example.onlineshop.entity.Role;
-import com.example.onlineshop.repository.RoleRepository;
-import com.example.onlineshop.service.facade.OrderPlaceFacadeImpl;
+import javax.servlet.ServletContext;
+import javax.transaction.Transactional;
+import java.util.Set;
 
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc(addFilters = false)
 class OrderPlacingIntegrationTest {
 
-//	@Autowired
-	private MockMvc mockMvc;
-//	  @Autowired private AccountRepository accountRepository;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	@Autowired
-	private FilterChainProxy springSecurityFilterChain;
+    private MockMvc mockMvc;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @Autowired
+    private FilterChainProxy springSecurityFilterChain;
 
-	@Autowired
-	private OrderPlaceFacadeImpl service;
+    @Autowired
+    private OrderPlaceFacadeImpl service;
 
-	@Autowired
-	private RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-	String token;
-	@BeforeEach
-	void setUp() throws Exception {
+    String token;
 
-		// Mock Spring security
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-				.apply(SecurityMockMvcConfigurers.springSecurity()).addFilter(springSecurityFilterChain).build();
-		Role role = Role.builder().id(TestConstants.ROLE_ID).name(TestConstants.ADMINISTRATOR).build();
-		
-		// Prepare data
-		roleRepository.save(role);
-		UserDto user = new UserDto();
-		user.setId(TestConstants.USER_ID);
-		user.setUsername(TestConstants.USERNAME);
-		user.setEmail(TestConstants.EMAIL);
-		user.setPassword(TestConstants.PASSWORD);
-		user.setAuthorities(Set.of(role));
-		service.createUser(user);
-		token = obtainAccessToken(TestConstants.USERNAME, TestConstants.PASSWORD);
-		
-	}
-	
-	@Test
-	void test() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
+
+        // Mock Spring security
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity()).addFilter(springSecurityFilterChain).build();
+        Role role = Role.builder().id(TestConstants.ROLE_ID).name(TestConstants.ADMINISTRATOR).build();
+
+        // Prepare data
+        roleRepository.save(role);
+        UserDto user = new UserDto();
+        user.setId(TestConstants.USER_ID);
+        user.setUsername(TestConstants.USERNAME);
+        user.setEmail(TestConstants.EMAIL);
+        user.setPassword(TestConstants.PASSWORD);
+        user.setAuthorities(Set.of(role));
+        service.createUser(user);
+        token = obtainAccessToken();
+
+    }
+
+    @Test
+    void test() throws Exception {
 //		this.mockMvc.perform(MockMvcRequestBuilders.get("/users").header("Authorization", "Bearer " + token))
 //		.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
-	}
+    }
 
-	@Test
-	void should_ProvidesController_WhengivenWac() throws Exception {
+    @Test
+    void should_ProvidesController_WhenGivenWac() throws Exception {
 
-		final ServletContext servletContext = webApplicationContext.getServletContext();
-		Assertions.assertNotNull(servletContext);
-		Assertions.assertTrue(servletContext instanceof MockServletContext);
-	}
+        final ServletContext servletContext = webApplicationContext.getServletContext();
+        Assertions.assertNotNull(servletContext);
+        Assertions.assertTrue(servletContext instanceof MockServletContext);
+    }
 
-	@Test
-	void should_PerformSuccessfulGetUsers_WhenValidToken() throws Exception {
-		// Given
-//		String token = obtainAccessToken(TestConstants.USERNAME, TestConstants.PASSWORD);
+    @Test
+    void should_PerformSuccessfulGetUsers_WhenValidToken() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/users").header("Authorization", "Bearer " + token))
+                .andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
+    }
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/users").header("Authorization", "Bearer " + token))
-				.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
-	}
+    private String obtainAccessToken() throws Exception {
 
-	private String obtainAccessToken(String username, String password) throws Exception {
+        String jsonBody = "{\r\n" + "    \"username\": \"" + TestConstants.USERNAME + "\",\r\n" + "    \"password\": \"" + TestConstants.PASSWORD
+                + "\"\r\n" + "}";
+        ResultActions result = this.mockMvc
+                .perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
 
-		String jsonBody = "{\r\n" + "    \"username\": \"" + username + "\",\r\n" + "    \"password\": \"" + password
-				+ "\"\r\n" + "}";
-		ResultActions result = this.mockMvc
-				.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
-						.content(jsonBody))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-
-		String resultString = result.andReturn().getResponse().getContentAsString();
-		JacksonJsonParser jsonParser = new JacksonJsonParser();
-		return jsonParser.parseMap(resultString).get("token").toString();
-	}
+        String resultString = result.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("token").toString();
+    }
 
 }

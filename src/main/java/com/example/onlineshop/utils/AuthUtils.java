@@ -9,7 +9,6 @@ import com.example.onlineshop.service.exception.AccessDeniedException;
 
 public class AuthUtils {
 
-	/* Avoid to create an instance */
 	private AuthUtils() {
 	}
 

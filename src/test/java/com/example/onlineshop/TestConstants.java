@@ -1,4 +1,4 @@
-package com.example.onlineshop.constants;
+package com.example.onlineshop;
 
 import java.math.BigDecimal;
 
