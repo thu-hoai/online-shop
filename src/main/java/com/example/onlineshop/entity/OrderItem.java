@@ -50,8 +50,11 @@ public class OrderItem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "OrderItem [ids=" + ids + ", product=" + product + ", order=" + order + ", orderItemStatus="
-				+ orderItemStatus + ", quantity=" + quantity + "]";
+		return "OrderItem{" +
+				", product=" + product +
+				", order=" + order +
+				", orderItemStatus=" + orderItemStatus +
+				", quantity=" + quantity +
+				'}';
 	}
-
 }

@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.onlineshop.dto.ItemFormDto;
 import com.example.onlineshop.dto.OrderDto;
-import com.example.onlineshop.dto.OrderItemDto;
 import com.example.onlineshop.dto.PageDto;
 import com.example.onlineshop.dto.ProductDto;
 import com.example.onlineshop.dto.SearchCriteria;
@@ -28,23 +27,6 @@ public interface OrderPlaceFacade {
 	 */
 	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId);
 
-	/**
-	 * Modify the quantity of the specific item
-	 * 
-	 * @param userId
-	 * @param orderItem
-	 * @param newQuantity
-	 * @return
-	 */
-	public OrderItemDto modifyItemQuantityOfOrder(Long userId, Long orderItem, Integer newQuantity);
-
-	/**
-	 * Remove the specific item
-	 * 
-	 * @param userId
-	 * @param orderItemId
-	 */
-	public void removeOrderItem(Long userId, Long orderItemId);
 
 	/**
 	 * Get order by order id. Calculate the temp order amount
@@ -67,7 +49,7 @@ public interface OrderPlaceFacade {
 
 	public ProductDto getProductById(Long productId);
 
-	public PageDto<ProductDto> getPaginatedProductByCriteria(Long userId, String searchToken, Pageable pageRequest);
+	public PageDto<ProductDto> getPaginatedProductByCriteria(String searchToken, Pageable pageRequest);
 
 	public ProductDto addProduct(ProductDto productDto);
 

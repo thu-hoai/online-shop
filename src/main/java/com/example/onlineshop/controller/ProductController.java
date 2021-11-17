@@ -1,6 +1,7 @@
 package com.example.onlineshop.controller;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,13 +25,13 @@ public class ProductController {
 	private final OrderPlaceFacade service;
 
 	@GetMapping
-	public PageDto<ProductDto> getPaginatedProducsByCriteria(final Pageable pageRequest,
-			@RequestParam(value = "search", required = false) final String search,
-			@RequestParam(value = "userId") final Long userId) {
-		return service.getPaginatedProductByCriteria(userId, search, pageRequest);
+	public PageDto<ProductDto> getPaginatedProductsByCriteria(final Pageable pageRequest,
+			@RequestParam(value = "search", required = false) final String search) {
+		return service.getPaginatedProductByCriteria(search, pageRequest);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('Administrator')")
 	public ProductDto addProduct(@RequestBody ProductDto productDto) {
 		return service.addProduct(productDto);
 	}

@@ -30,19 +30,4 @@ public class AuthUtils {
 		return (JwtUser) getCurrentLoggedInUserDetails().getPrincipal();
 	}
 
-	public static JwtUser getAuthorizedUser(String username) {
-		JwtUser principal = (JwtUser) getCurrentLoggedInUserDetails().getPrincipal();
-		if (!principal.getUsername().equals(username)) {
-			throw new AccessDeniedException(UNAUTHORIZED_MESSAGE);
-		}
-		return principal;
-	}
-
-	public static JwtUser getAuthorizedUser(Long id) {
-		JwtUser principal = (JwtUser) getCurrentLoggedInUserDetails().getPrincipal();
-		if (!principal.getId().equals(id)) {
-			throw new AccessDeniedException(UNAUTHORIZED_MESSAGE);
-		}
-		return principal;
-	}
 }

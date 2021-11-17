@@ -70,15 +70,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler({ OrderItemNotFoundException.class })
-	public final ResponseEntity<ExceptionResponse> handleTakenUsernameException(OrderItemNotFoundException ex,
-			WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(),
-				ExceptionCode.ORDER_ITEM_NOT_FOUND.getStatusCode(), request.getDescription(false),
-				ExceptionCode.ORDER_ITEM_NOT_FOUND.toString());
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
-	}
-
 	/**
 	 * Access denied exception handling
 	 */

@@ -13,7 +13,6 @@ import com.example.onlineshop.dto.ProductDto;
 import com.example.onlineshop.dto.SearchCriteria;
 import com.example.onlineshop.dto.UserDto;
 import com.example.onlineshop.security.dto.JwtUser;
-import com.example.onlineshop.service.OrderItemService;
 import com.example.onlineshop.service.OrderService;
 import com.example.onlineshop.service.ProductService;
 import com.example.onlineshop.service.UserService;
@@ -27,8 +26,6 @@ import lombok.AllArgsConstructor;
 public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 
 	private final OrderService orderService;
-
-	private final OrderItemService orderItemService;
 
 	private final ProductService productService;
 
@@ -44,16 +41,6 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId) {
 		orderService.addItemToOrder(itemForm, orderId);
 		return orderService.getOrderById(orderId);
-	}
-
-	@Override
-	public OrderItemDto modifyItemQuantityOfOrder(Long userId, Long orderItemId, Integer newQuantity) {
-		return orderItemService.modifyItemQuantityOfOrder(userId, orderItemId, newQuantity);
-	}
-
-	@Override
-	public void removeOrderItem(Long userId, Long orderItemId) {
-		orderItemService.removeOrderItem(userId, orderItemId);
 	}
 
 	@Override
@@ -77,7 +64,7 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	}
 
 	@Override
-	public PageDto<ProductDto> getPaginatedProductByCriteria(Long userId, String searchToken,
+	public PageDto<ProductDto> getPaginatedProductByCriteria(String searchToken,
 			final Pageable pageRequest) {
 		List<SearchCriteria> criteria = SearchCriteriaUtils.build(searchToken);
 		return productService.getPaginatedProductByCriteria(pageRequest, criteria);
