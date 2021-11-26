@@ -9,7 +9,7 @@ An online shop Rest API practicing Spring Boot
 - Postgres database
 
 ### Database schema
-![Database schema](db-schema.png)
+![Database schema](db-schema.PNG)
 
 ### Prerequisites
 - Java JDK 11
