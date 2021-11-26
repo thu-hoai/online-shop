@@ -1,0 +1,43 @@
+<app-header
+  [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/img/brand/online-shopping.svg', width: 200, height: 40, alt: 'onlineShop'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/online-shopping.svg', width: 200, height: 40, alt: 'onlineShop'}"
+  [sidebarToggler]="'lg'"
+  [asideMenuToggler]="'lgX'"
+  [asideMenuToggler]=false
+  >
+
+  <ul class="nav navbar-nav ml-auto">
+    <div>
+      <a href="#" (click)="logOut()"><i class="fa fa-lock"></i> Log out</a>
+    </div>
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Paramètres</a>
+        <a class="dropdown-item" href="#" (click)="logOut()"><i class="fa fa-lock"></i> Se déconnecter</a>
+      </div>
+    </li>
+  </ul>
+</app-header>
+<div class="app-body" >
+
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb">
+      <app-breadcrumb>
+      </app-breadcrumb>
+    </ol>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div><!-- /.container-fluid -->
+  </main>
+</div>
+<app-footer>
+    <span><b>Online shop</b> &copy; </span>
+    <span class="ml-auto"> <a href="https://github.com/thu-hoai/online-shop">Github</a></span>
+</app-footer>
