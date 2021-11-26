@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.example</groupId>
+		<artifactId>online-shop-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>online-shop-front</artifactId>
+	<name>ONLINE SHOP Frontend</name>
+
+	<properties>
+		<!-- <sonar.sources>src/app</sonar.sources>
+		<url.nexus>https://nexus.bouygues-construction.com</url.nexus>
+		<node.repository>${url.nexus}/repository/node-dist/</node.repository>
+		<npm.registry>${url.nexus}/repository/npm-registry/</npm.registry>
+		<npm.repository>${npm.registry}npm/-/</npm.repository> -->
+		<node.version>v16.13.0</node.version>
+		<!-- <npm.version>5.6.0</npm.version> -->
+		<frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
+		<sonar.typescript.plugin.version>2.1.0.4359</sonar.typescript.plugin.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.sonarsource.typescript</groupId>
+			<artifactId>sonar-typescript-plugin</artifactId>
+			<version>${sonar.typescript.plugin.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>dist</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>${frontend.maven.plugin.version}</version>
+				<configuration>
+					<nodeVersion>${node.version}</nodeVersion>
+					<!-- <npmVersion>${npm.version}</npmVersion> -->
+					<!-- <npmDownloadRoot>${npm.repository}</npmDownloadRoot> -->
+					<nodeDownloadRoot>${node.repository}</nodeDownloadRoot>
+					<npmInheritsProxyConfigFromMaven>true</npmInheritsProxyConfigFromMaven>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install --registry=${npm.registry}</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm rebuild node-sass</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>rebuild node-sass</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>run-script build-prod</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

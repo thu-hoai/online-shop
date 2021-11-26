@@ -1,0 +1,19 @@
+{
+    "ACTIVATE_ACCOUNT": {
+        "INIT_PASSWORD": "Initialiser le mot de passe",
+        "PASSWORDS_NOT_MATCHING": "Les mots de passes ne sont pas identiques",
+        "SET_YOUR_PASSWORD": "Saisir votre mot de passe",
+        "PASSWORD": "Mot de passe",
+        "SET_PASSWORD": "Saisir le mot de passe",
+        "WEAK": "Faible",
+        "AVERAGE": "Moyen",
+        "STRONG": "Fort",
+        "REPEAT_PASSWORD": "Répéter le mot de passe",
+        "SAVE_PASSWORD": "Enregistrer le mot de passe",
+        "SAVE_PASSWORD_SUCCESS": "Mot de passe enregistré avec succès",
+        "RESEND_ACTIVATION_LINK": "Renvoyer le lien d'activation",
+        "EXPIRED_ACTIVATION_LINK": "Votre lien d'activation est expiré",
+        "ACTIVATION_LINK_RESENT": "Nouveau lien d'activation envoyé avec succès",
+        "INVALID_ACTIVATION_LINK": "Lien d'activation invalide !"
+    }
+}

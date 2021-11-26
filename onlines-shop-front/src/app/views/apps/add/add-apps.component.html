@@ -1,0 +1,39 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="card" [formGroup]="appForm" (ngSubmit)="onFormSubmit()">
+                <div class="card-header">
+                    <i class="fa fa-edit"></i>
+
+                    <ng-container *ngIf="!editMode; else elseBlock">Ajout d'une nouvelle application</ng-container>
+                    <ng-template #elseBlock>Modification de l'application</ng-template>
+                </div>
+                <div class="card-body">
+                    <h4>Informations sur l'application</h4>
+                    <div class="form-group has-success">
+                        <label class="form-col-form-label" for="inputSuccess1">Nom de l'application</label>
+                        <input formControlName="name" class="form-control" [class.is-invalid]="name.invalid && submitted" id="inputSuccess1" placeholder="Saisir le nom">
+                        <div class="invalid-feedback">Le nom de l'application est obligatoire</div>
+                    </div>
+                    <div class="form-group has-warning" *ngIf="editMode">
+                        <label class="form-col-form-label" for="inputWarning1">Identifiant unique de l'application</label>
+                        <input class="form-control" disabled="disabled" id="inputWarning1" value="{{ appId }}" placeholder="APP_ID">
+                    </div>
+                    <div class="form-group has-danger">
+                        <label class="form-col-form-label" for="inputError1">Description</label>
+                        <textarea formControlName="description" class="form-control" id="inputError1" placeholder="Description de l'application" style="height: 124px"></textarea>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn" [class.btn-success]="!editMode" [class.btn-warning]="editMode">
+                        <i class="fa fa-check"></i>
+                        <ng-container *ngIf="!editMode; else elseButton">Enregistrer</ng-container>
+                        <ng-template #elseButton>Modifier</ng-template>
+                    </button>&nbsp;<button routerLink="/applications/list" type="submit" class="btn btn-default">
+                        <i class="fa fa-times"></i> Annuler</button>
+                </div>
+            </form>
+        </div>
+        <!--/.col-->
+    </div>
+</div>

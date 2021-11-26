@@ -1,0 +1,19 @@
+{
+    "ACTIVATE_ACCOUNT": {
+        "INIT_PASSWORD": "Initialize your password",
+        "PASSWORDS_NOT_MATCHING": "Passwords don't match",
+        "SET_YOUR_PASSWORD": "Enter your password",
+        "PASSWORD": "Password",
+        "SET_PASSWORD": "Enter the password",
+        "WEAK": "Weak",
+        "AVERAGE": "Not that strong",
+        "STRONG": "Strong",
+        "REPEAT_PASSWORD": "Repeat password",
+        "SAVE_PASSWORD": "Save password",
+        "SAVE_PASSWORD_SUCCESS": "Password registered successfully",
+        "RESEND_ACTIVATION_LINK": "Resend activation link",
+        "EXPIRED_ACTIVATION_LINK": "Your activation link has expired",
+        "ACTIVATION_LINK_RESENT": "New activation link sent successfully",
+        "INVALID_ACTIVATION_LINK": "Invalid activation link!"
+    }
+}
