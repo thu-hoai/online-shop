@@ -3,10 +3,12 @@
 ## Introduction
 An online shop Rest API practicing Spring Boot
 ### Technical stack
-- Spring Boot
-- Spring Security, Spring REST, Spring Data
-- lombok
+- Java 11
+- Spring Boot 2.5
+- Spring Security, Spring REST, Spring Data JPA
+- JWT authentication
 - Postgres database
+- Angular 9
 
 ### Database schema
 ![Database schema](db-schema.PNG)
@@ -14,9 +16,36 @@ An online shop Rest API practicing Spring Boot
 ### Prerequisites
 - Java JDK 11
 - Maven 3
+- Angular CLI 9
+- Node 12
 
 ### Usage
-There are several ways to run a Spring Boot application on your local machine. One way is to execute the main method in the Application class from your IDE.
-</br>Alternatively you can use the Spring Boot Maven plugin like so:
-mvn spring-boot:run
 
+__Backend__
+
+- cd `online-shop-back`
+- Configuration data source at `application.yml`
+- Run `mvn install`
+- Run `mvn spring-boot:run`
+- _By default the backend server will run on `http://localhost:8080/`_
+
+__FrontEnd__
+
+- cd `online-shop-angular`
+- Run `npm install`
+- Run `ng serve --open`
+- _By default the frontend will run on `http://localhost:4200/`_
+
+### App Pages
+
+![Login page](login-page.PNG)
+
+![Login page](product-page.PNG)
+
+![Login page](product-item-page.PNG)
+
+![Login page](cart-page.PNG)
+
+![Login page](cart-page-confirm.PNG)
+
+![Login page](order-page.PNG)
