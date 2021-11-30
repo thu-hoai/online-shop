@@ -9,8 +9,12 @@ interface Order {
 
 interface OrderItem {
   productId: number;
+  productName: string;
+  productStock: number;
   price: number;
   orderId: number;
   status: string;
   quantity: number;
 }
+
+

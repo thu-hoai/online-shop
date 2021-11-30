@@ -5,6 +5,7 @@ import { DefaultLayoutComponent } from './containers/default-layout';
 // Import Containers
 
 import { CanActivateAuthGuard } from './services/security/can-activate.authguard';
+import { CartComponent } from './views/cart/cart.component';
 import { LoginComponent } from './views/login/login.component';
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
   },
   {
     path: '',
+    canActivate: [CanActivateAuthGuard],
     component: DefaultLayoutComponent,
     data: {
       title: 'Home'
@@ -38,9 +40,11 @@ export const routes: Routes = [
         loadChildren: () => import('./views/order/order.module').then(m => m.OrderModule)
       },
       {
-        path: 'users',
-        canActivate: [CanActivateAuthGuard],
-        loadChildren: () => import('./views/user/user.module').then(m => m.UserModule)
+        path: 'cart',
+        component: CartComponent,
+        data: {
+          title: 'Order in placing'
+        }
       }
     ]
   }

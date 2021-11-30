@@ -18,8 +18,6 @@ export class AuthInterceptor implements HttpInterceptor {
         let authReq = req;
 
         if (this.token.getToken() != null) {
-            console.log('Intercepting .. with ' + this.token.getToken());
-            console.log(req);
             authReq = req.clone({ headers: req.headers.set(TOKEN_HEADER_KEY, 'Bearer ' + this.token.getToken()) });
         }
 
@@ -28,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (err instanceof HttpErrorResponse) {
 
                     if (err.status === 401) {
-                        this.router.navigate(['login']);
+                        this.router.navigate(['/login']);
                     }
                 }
             }

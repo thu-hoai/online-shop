@@ -20,11 +20,12 @@ import { TokenStorage } from './services/token.storage';
 import { AuthInterceptor } from './services/security/auth.interceptor';
 import { CanActivateAuthGuard } from './services/security/can-activate.authguard';
 
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefaultLayoutComponent } from './containers/default-layout';
 import { LoginComponent } from './views/login/login.component';
 import { AppRoutingModule } from './app.routing';
 import { SweetAlertService } from 'angular-sweetalert-service/js';
+import { CartComponent } from './views/cart/cart.component';
 
 
 const APP_CONTAINERS = [
@@ -36,6 +37,7 @@ const APP_CONTAINERS = [
     AppComponent,
     ...APP_CONTAINERS,
     LoginComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +53,7 @@ const APP_CONTAINERS = [
     TabsModule.forRoot(),
     HttpClientModule,
     ReactiveFormsModule,
-
+    FormsModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

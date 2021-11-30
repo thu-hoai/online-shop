@@ -25,4 +25,21 @@ export class OrderService {
   getOrderByOrderId(orderId: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}${this.endpoint}/${orderId}`);
   }
+
+  getCurrentCart(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}${this.endpoint}/current-order`);
+  }
+
+  checkoutOrder(orderId: string) : Observable<any> {
+    return this.http.put(`${environment.apiUrl}${this.endpoint}/${orderId}`, null);
+
+  }
+
+  removeOrderItem(orderId: string, productId: string) {
+    return this.http.delete(`${environment.apiUrl}${this.endpoint}/${orderId}?productId=${productId}`);
+  }
+
+  getOrders() : Observable<any> {
+    return this.http.get(`${environment.apiUrl}${this.endpoint}`);
+  }
 }

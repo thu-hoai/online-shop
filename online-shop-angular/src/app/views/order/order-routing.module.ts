@@ -3,7 +3,6 @@ import {
   Routes,
   RouterModule
 } from '@angular/router';
-import { CurrentOrderComponent } from './current-order/current-order.component';
 import { OrderListComponent } from './order-list/order-list.component';
 
 
@@ -26,13 +25,6 @@ const routes: Routes = [
           title: 'List'
         }
       },
-      {
-        path: ':id',
-        component: CurrentOrderComponent,
-        data: {
-          title: 'details'
-        }
-      }
     ]
   },
 ];

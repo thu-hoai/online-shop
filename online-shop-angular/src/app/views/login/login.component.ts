@@ -29,8 +29,6 @@ export class LoginComponent {
       this._authService.login(value.username, value.password).subscribe(
         (data: JwtUser) => {
           this._authService.saveLoginData(data);
-
-          // Redirect to dashboard
           this.router.navigate(['/products']);
         },
         (error) => {
@@ -41,7 +39,7 @@ export class LoginComponent {
   }
 
   handleError(error: any) {
-    let message: string = "Une erreur a eu lieu lors de l'authentification";
+    let message: string = "An error occurred during authentication";
 
     switch (error.status) {
       case 401:
@@ -54,8 +52,6 @@ export class LoginComponent {
         message = 'Forbidden';
         break;
     }
-
-    console.log(message);
 
     this._alert.error({
       title: 'Oops...',

@@ -37,7 +37,8 @@ export class ProductItemComponent implements OnInit {
         this._orderService
           .addItemToOrder(request, this.currentOrderId)
           .subscribe((res) => {
-            this.router.navigateByUrl('/orders/' + this.currentOrderId);
+            this.router.navigateByUrl('/cart');
+            // this.router.navigateByUrl('/orders/' + this.currentOrderId);
           });
       });
   }
@@ -74,8 +75,10 @@ export class ProductItemComponent implements OnInit {
       this._orderService.getOrderByOrderId(this.currentOrderId).subscribe(
         (order) => {
           this.currentOrder = order;
+          this.router.navigate(['/cart']);
+
           // this.router.navigate(['/orders/' + this.currentOrderId]);
-          this.router.navigateByUrl('/orders/' + this.currentOrderId);
+          // this.router.navigateByUrl('/cart/' + this.currentOrderId);
         },
         () => console.log('Get order by order id failed')
       );

@@ -4,20 +4,16 @@ export const navItems = [
     url: '/products',
   },
   {
-    name: 'Orders',
+    name: 'My Cart',
+    url: '/cart',
+  },
+  {
+    name: 'My Orders',
     url: '/orders',
-  },
-  {
-    title: true,
-    name: 'Administration'
-  },
-  {
-    name: 'Users',
-    url: '/users',
-    icon: 'icon-user'
   },
   // {
   //   title: true,
   //   name: 'Administration'
   // },
+
 ];
