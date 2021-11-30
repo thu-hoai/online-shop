@@ -91,13 +91,13 @@ class OrderPlacingIntegrationTest {
     ItemFormDto form = new ItemFormDto(TestConstants.PRODUCT_ID_2, TestConstants.PRODUCT_2_QUANTITY);
     OrderDto orderDto = service.placeNewEmptyOrder();
      service.addItemToOrder(form, orderDto.getOrderId());
-    OrderDto actual = service.getOrderbyId(jwt.getId(),orderDto.getOrderId());
+    OrderDto actual = service.getOrderbyId(orderDto.getOrderId());
 
     // Get product by Id
     ProductDto productDto = service.getProductById(TestConstants.PRODUCT_ID_2);
 
+    // Then
     Assertions.assertEquals(TestConstants.PRODUCT_2_STOCK - TestConstants.PRODUCT_2_QUANTITY, productDto.getProductStock());
-    Assertions.assertEquals(TestConstants.ORDER_ID, actual.getOrderId());
     Assertions.assertEquals(jwt.getId(), actual.getUserId());
     Assertions.assertEquals(OrderStatusCode.NEW.toString(), actual.getOrderStatusCode());
 

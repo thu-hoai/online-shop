@@ -64,7 +64,6 @@ public class SearchCriteriaUtils {
 			if (op == SearchOperation.EQUALITY) {
 				final boolean startWithAsterisk = prefix.contains("*");
 				final boolean endWithAsterisk = suffix.contains("*");
-
 				if (startWithAsterisk && endWithAsterisk) {
 					op = SearchOperation.CONTAINS;
 				} else if (startWithAsterisk) {

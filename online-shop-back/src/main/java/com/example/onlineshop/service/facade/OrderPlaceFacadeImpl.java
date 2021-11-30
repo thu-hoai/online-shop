@@ -40,16 +40,19 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	@Override
 	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId) {
 		orderService.addItemToOrder(itemForm, orderId);
-		return orderService.getOrderById(orderId);
+		OrderDto order =  orderService.getOrderById(orderId);
+		return orderService.updateAmountOrder(order);
 	}
 
 	@Override
-	public OrderDto checkoutTheOrder(OrderDto orderDto) {
-		return orderService.checkoutOrder(orderDto);
+	public OrderDto checkoutTheOrder(Long orderId) {
+		Long userId = AuthUtils.getCurrentUserLoggedIn().getId();
+
+		return orderService.checkoutOrder(orderId, userId);
 	}
 
 	@Override
-	public OrderDto getOrderbyId(Long userId, Long orderId) {
+	public OrderDto getOrderbyId(Long orderId) {
 		return orderService.getOrderById(orderId);
 	}
 
@@ -61,6 +64,12 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	@Override
 	public PageDto<OrderDto> findAllOrders(Pageable pageRequest, List<SearchCriteria> criteria) {
 		return orderService.findAllOrders(pageRequest, criteria);
+	}
+
+	@Override
+	public OrderDto findCurrentCart() {
+		Long userId = AuthUtils.getCurrentUserLoggedIn().getId();
+		return orderService.findCurrentCart(userId);
 	}
 
 	@Override
@@ -98,6 +107,11 @@ public class OrderPlaceFacadeImpl implements OrderPlaceFacade {
 	@Override
 	public JwtUser updateUser(UserDto user) {
 		return userService.updateUser(user);
+	}
+
+	@Override
+	public void deleteOrderItem(Long orderId, Long productId) {
+		orderService.deleteOrderItem(orderId, productId);
 	}
 
 }

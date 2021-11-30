@@ -2,9 +2,16 @@ package com.example.onlineshop.service.impl;
 
 import com.example.onlineshop.dto.ItemFormDto;
 import com.example.onlineshop.dto.OrderDto;
+import com.example.onlineshop.dto.OrderItemDto;
 import com.example.onlineshop.dto.PageDto;
 import com.example.onlineshop.dto.SearchCriteria;
-import com.example.onlineshop.entity.*;
+import com.example.onlineshop.entity.Order;
+import com.example.onlineshop.entity.OrderItem;
+import com.example.onlineshop.entity.OrderItemId;
+import com.example.onlineshop.entity.OrderItemStatus;
+import com.example.onlineshop.entity.OrderStatus;
+import com.example.onlineshop.entity.Product;
+import com.example.onlineshop.entity.User;
 import com.example.onlineshop.enums.ExceptionCode;
 import com.example.onlineshop.enums.OrderItemStatusCode;
 import com.example.onlineshop.enums.OrderStatusCode;
@@ -13,6 +20,7 @@ import com.example.onlineshop.repository.OrderItemRepository;
 import com.example.onlineshop.repository.OrderRepository;
 import com.example.onlineshop.repository.ProductRepository;
 import com.example.onlineshop.repository.UserRepository;
+import com.example.onlineshop.security.dto.JwtUser;
 import com.example.onlineshop.service.OrderService;
 import com.example.onlineshop.service.exception.InsufficientItemOrderException;
 import com.example.onlineshop.service.exception.OrderNotFoundException;
@@ -28,8 +36,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -63,6 +69,7 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
 
   /**
    * Place a new empty order
+   * Return existing order in case user is in progress order
    *
    * @param userId id of user who is in charge of order placing
    * @return orderDto new order already created
@@ -70,10 +77,15 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
   @Override
   public OrderDto placeNewEmptyOrder(Long userId) {
     User user = userRepository.findById(userId).orElseThrow(
-        () -> new UserNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.USER_NOT_FOUND, userId.toString())));
+      () -> new UserNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.USER_NOT_FOUND, userId.toString())));
+    List<Order> currentOrders = orderRepository.findByUserIdAndOrderStatus(user.getId(), OrderStatus.builder().orderStatusCode(OrderStatusCode.NEW.toString()).build());
+    if (!currentOrders.isEmpty()) {
+      return orderMapper.convertToOrderDto(currentOrders.get(0));
+    }
+
     Order order = Order.builder()
-        .orderStatus(OrderStatus.builder().orderStatusCode(OrderStatusCode.NEW.toString()).build()).user(user)
-        .orderDate(LocalDateTime.now()).orderAmount(BigDecimal.ZERO).build();
+      .orderStatus(OrderStatus.builder().orderStatusCode(OrderStatusCode.NEW.toString()).build()).user(user)
+      .orderDate(LocalDateTime.now()).orderAmount(BigDecimal.ZERO).build();
     return orderMapper.convertToOrderDto(orderRepository.save(order));
   }
 
@@ -91,17 +103,17 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
   @Override
   public void addItemToOrder(ItemFormDto itemForm, Long orderId) {
     Order orderEntity = orderRepository.findById(orderId).orElseThrow(
-        () -> new OrderNotFoundException(
-            ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, orderId.toString())));
+      () -> new OrderNotFoundException(
+        ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, orderId.toString())));
 
     Product productEntity = productRepository.findById(itemForm.getProductId())
-        .orElseThrow(() -> new ProductNotFoundException(
-            ErrorMessageFormatUtils.getErrorMessage(
-                ExceptionCode.PRODUCT_NOT_FOUND, itemForm.getProductId().toString())));
+      .orElseThrow(() -> new ProductNotFoundException(
+        ErrorMessageFormatUtils.getErrorMessage(
+          ExceptionCode.PRODUCT_NOT_FOUND, itemForm.getProductId().toString())));
 
     if (productEntity.getProductStock() < itemForm.getQuantity()) {
       throw new InsufficientItemOrderException(
-          ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.OUT_OF_STOCK_ORDER_ITEM, itemForm.getProductId().toString()));
+        ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.OUT_OF_STOCK_ORDER_ITEM, itemForm.getProductId().toString()));
     }
 
     // Update the product stock
@@ -110,12 +122,30 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
     // Update order basket
     List<OrderItem> items;
     if (orderEntity.getOrderItem() == null || orderEntity.getOrderItem().isEmpty()) {
-      items = addFirstItemToOrder(productEntity, orderEntity, itemForm);
+      addFirstItemToOrder(productEntity, orderEntity, itemForm);
     } else {
-      items = mergeItemToCurrentOrder(productEntity, orderEntity, itemForm);
+      mergeItemToCurrentOrder(productEntity, orderEntity, itemForm);
     }
-    // Update order amount
-    updateAmountOrder(orderEntity);
+
+  }
+
+  @Override
+  public OrderDto findCurrentCart(Long userId) {
+    List<Order> orders = orderRepository.findByUserIdAndOrderStatus(
+      userId, OrderStatus.builder().orderStatusCode(
+        OrderStatusCode.NEW.toString()).build());
+    if (!orders.isEmpty()) {
+      return orderMapper.convertToOrderDto(orders.get(0));
+    }
+    return null;
+  }
+
+  @Override
+  public void deleteOrderItem(Long orderId, Long productId) {
+    List<OrderItem> orderItems = orderItemRepository.findByIdsOrderIdAndIdsProductId(orderId, productId);
+    if (!orderItems.isEmpty()) {
+      orderItemRepository.deleteById(orderItems.get(0).getIds());
+    }
   }
 
   /**
@@ -129,14 +159,20 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
   public OrderDto getOrderById(Long orderId) {
 
     Order orderEntity = orderRepository.findById(orderId).orElseThrow(
-        () -> new OrderNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, orderId.toString())));
+      () -> new OrderNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, orderId.toString())));
 
     return orderMapper.convertToOrderDto(orderEntity);
   }
 
-  private void updateAmountOrder(Order orderEntity) {
-    orderEntity.setOrderAmount(calculateAmount(orderEntity.getOrderItem()));
-    orderRepository.save(orderEntity);
+  @Override
+  public OrderDto updateAmountOrder(OrderDto order) {
+    Order orderEntity = orderRepository.findById(order.getOrderId()).orElseThrow(
+      () -> new OrderNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, order.getOrderId().toString())));
+
+    orderEntity.setOrderAmount(calculateAmount(order.getOrderItem()));
+
+    Order updatedOrder = orderRepository.save(orderEntity);
+    return orderMapper.convertToOrderDto(updatedOrder);
   }
 
   /**
@@ -150,7 +186,7 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
    */
   private OrderDto changeOrderStatus(Long userId, Long orderId, String newStatus) {
     Order entityOrder = orderRepository.findById(orderId).orElseThrow(
-        () -> new OrderNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, orderId.toString())));
+      () -> new OrderNotFoundException(ErrorMessageFormatUtils.getErrorMessage(ExceptionCode.ORDER_NOT_FOUND, orderId.toString())));
     entityOrder.setOrderStatus(OrderStatus.builder().orderStatusCode(newStatus).build());
     Order modifiedOrder = orderRepository.save(entityOrder);
     return orderMapper.convertToOrderDto(modifiedOrder);
@@ -164,56 +200,48 @@ public class OrderServiceImpl extends AbstractService<Order> implements OrderSer
    * @return a updated OrderDto object
    */
   @Override
-  public OrderDto checkoutOrder(OrderDto orderDto) {
+  public OrderDto checkoutOrder(Long orderId, Long userId) {
     // change status
-    return changeOrderStatus(orderDto.getUserId(), orderDto.getOrderId(), OrderStatusCode.CML.toString());
+    return changeOrderStatus(
+      userId, orderId, OrderStatusCode.CML.toString());
   }
 
-  private List<OrderItem> addFirstItemToOrder(Product productEntity, Order orderEntity, ItemFormDto itemForm) {
+  private void addFirstItemToOrder(Product productEntity, Order orderEntity, ItemFormDto itemForm) {
     // Save current item
     OrderItem item = OrderItem.builder()
-        .ids(new OrderItemId(orderEntity.getOrderId(), productEntity.getProductId()))
-        .orderItemStatus(
-            OrderItemStatus.builder().orderItemStatusCode(OrderItemStatusCode.AVL.toString()).build())
-        .order(orderEntity).product(productEntity).quantity(itemForm.getQuantity()).build();
+      .ids(new OrderItemId(orderEntity.getOrderId(), productEntity.getProductId()))
+      .orderItemStatus(
+        OrderItemStatus.builder().orderItemStatusCode(OrderItemStatusCode.AVL.toString()).build())
+      .order(orderEntity).product(productEntity).quantity(itemForm.getQuantity()).build();
 
-    OrderItem createdItem = orderItemRepository.save(item);
+    orderItemRepository.save(item);
 
-    return Arrays.asList(createdItem);
   }
 
 
-  private List<OrderItem> mergeItemToCurrentOrder(Product productEntity, Order orderEntity, ItemFormDto itemForm) {
+  private void mergeItemToCurrentOrder(Product productEntity, Order orderEntity, ItemFormDto itemForm) {
     List<OrderItem> itemsList = orderItemRepository.findByIdsOrderIdAndIdsProductId(orderEntity.getOrderId(),
-        itemForm.getProductId());
+      itemForm.getProductId());
     List<OrderItem> currentOrderItems = orderEntity.getOrderItem();
-    List<OrderItem> updateOrderItems = new ArrayList<>();
 
     OrderItem item;
     if (itemsList == null || itemsList.isEmpty()) {
       item = OrderItem.builder().ids(new OrderItemId(orderEntity.getOrderId(), productEntity.getProductId()))
-          .orderItemStatus(
-              OrderItemStatus.builder().orderItemStatusCode(OrderItemStatusCode.AVL.toString()).build())
-          .order(orderEntity).product(productEntity).quantity(itemForm.getQuantity()).build();
+        .orderItemStatus(
+          OrderItemStatus.builder().orderItemStatusCode(OrderItemStatusCode.AVL.toString()).build())
+        .order(orderEntity).product(productEntity).quantity(itemForm.getQuantity()).build();
     } else {
       item = itemsList.get(0);
       item.setQuantity(item.getQuantity() + itemForm.getQuantity());
     }
     orderItemRepository.save(item);
-    updateOrderItems.add(item);
 
-    for (OrderItem orderItem : currentOrderItems) {
-      if (!orderItem.getIds().getProductId().equals(item.getIds().getProductId())) {
-        updateOrderItems.add(item);
-      }
-    }
-    return updateOrderItems;
   }
 
-  private BigDecimal calculateAmount(List<OrderItem> orderItem) {
+  private BigDecimal calculateAmount(List<OrderItemDto> orderItem) {
     if (orderItem == null) return BigDecimal.ZERO;
-    return orderItem.stream().map(item -> item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return orderItem.stream().map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity())))
+      .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
 }

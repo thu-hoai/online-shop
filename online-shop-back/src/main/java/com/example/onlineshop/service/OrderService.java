@@ -4,6 +4,7 @@ import com.example.onlineshop.dto.ItemFormDto;
 import com.example.onlineshop.dto.OrderDto;
 import com.example.onlineshop.dto.PageDto;
 import com.example.onlineshop.dto.SearchCriteria;
+import com.example.onlineshop.entity.Order;
 import com.example.onlineshop.service.exception.InsufficientItemOrderException;
 import com.example.onlineshop.service.exception.OrderNotFoundException;
 import com.example.onlineshop.service.exception.ProductNotFoundException;
@@ -33,10 +34,9 @@ public interface OrderService {
      * Check out the specific order
      * Throw {@link OrderNotFoundException} the order is not found
      *
-     * @param orderDto
-     * @return a updated OrderDto object
+     * @return an updated OrderDto object
      */
-    OrderDto checkoutOrder(OrderDto orderDto);
+    OrderDto checkoutOrder(Long orderId, Long userId);
 
     /**
      * Get order by order id
@@ -59,4 +59,9 @@ public interface OrderService {
      */
     void addItemToOrder(ItemFormDto itemForm, Long orderId);
 
+    OrderDto findCurrentCart(Long userId);
+
+    void deleteOrderItem(Long orderId, Long productId);
+
+    OrderDto updateAmountOrder(OrderDto order);
 }

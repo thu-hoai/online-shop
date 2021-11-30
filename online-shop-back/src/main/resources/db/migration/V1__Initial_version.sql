@@ -245,7 +245,7 @@ INSERT INTO public.t_order(
 
 -- order item
 CREATE TABLE public.order_item (
-    id bigint NOT NULL,
+    id bigint,
     product_id bigint NOT NULL,
     order_id bigint NOT NULL,
     order_item_status_code character varying(50),
@@ -263,8 +263,8 @@ ALTER TABLE ONLY public.order_item ALTER COLUMN id SET DEFAULT nextval('public.o
 
 SELECT pg_catalog.setval('public.order_item_id_seq', 1, false);
 
---ALTER TABLE ONLY public.order_item
---    ADD CONSTRAINT order_item_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.order_item
+    ADD CONSTRAINT order_item_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.order_item
     ADD CONSTRAINT fk_order_item__ref_order_item_status FOREIGN KEY (order_item_status_code) REFERENCES public.ref_order_item_status(order_item_status_code)  ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public.order_item

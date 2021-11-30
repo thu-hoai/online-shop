@@ -17,7 +17,7 @@ public interface OrderPlaceFacade {
 	/**
 	 * Create a new empty order
 	 */
-	public OrderDto placeNewEmptyOrder();
+	OrderDto placeNewEmptyOrder();
 
 	/**
 	 * Add an item to the specific order
@@ -25,42 +25,43 @@ public interface OrderPlaceFacade {
 	 * @param itemForm
 	 * @return
 	 */
-	public OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId);
+	OrderDto addItemToOrder(ItemFormDto itemForm, Long orderId);
 
 
 	/**
 	 * Get order by order id. Calculate the temp order amount
 	 * 
-	 * @param userId
 	 * @param orderId
-	 * @return
 	 */
-	public OrderDto getOrderbyId(Long userId, Long orderId);
+	OrderDto getOrderbyId(Long orderId);
 
-	public PageDto<OrderDto> findAllOrders(Pageable pageRequest, List<SearchCriteria> criteria);
+	PageDto<OrderDto> findAllOrders(Pageable pageRequest, List<SearchCriteria> criteria);
+
+	OrderDto findCurrentCart();
 
 	/**
 	 * Checkout the shopping cart
 	 * 
-	 * @param orderDto
 	 * @return
 	 */
-	public OrderDto checkoutTheOrder(OrderDto orderDto);
+	OrderDto checkoutTheOrder(Long orderId);
 
-	public ProductDto getProductById(Long productId);
+	ProductDto getProductById(Long productId);
 
-	public PageDto<ProductDto> getPaginatedProductByCriteria(String searchToken, Pageable pageRequest);
+	PageDto<ProductDto> getPaginatedProductByCriteria(String searchToken, Pageable pageRequest);
 
-	public ProductDto addProduct(ProductDto productDto);
+	ProductDto addProduct(ProductDto productDto);
 
-	public List<JwtUser> findAllUsers();
+	List<JwtUser> findAllUsers();
 
-	public JwtUser findUserById(Long id);
+	JwtUser findUserById(Long id);
 
-	public JwtUser createUser(UserDto user);
+	JwtUser createUser(UserDto user);
 
-	public void deleteUserById(Long id);
+	void deleteUserById(Long id);
 
-	public JwtUser updateUser(UserDto user);
+	JwtUser updateUser(UserDto user);
 
+
+	void deleteOrderItem(Long orderId, Long productId);
 }

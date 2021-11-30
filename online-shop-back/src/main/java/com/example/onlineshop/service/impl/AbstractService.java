@@ -29,6 +29,7 @@ public class AbstractService<T> {
 			if (specifications == null) {
 				specifications = Specification.where(userSpecification);
 			} else {
+
 				specifications = specifications.and(userSpecification);
 			}
 		}

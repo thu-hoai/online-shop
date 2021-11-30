@@ -41,23 +41,23 @@ import com.example.onlineshop.service.impl.OrderServiceImpl;
 class OrderServiceImplTest {
 
     @MockBean
-    private OrderRepository orderRepository;
+    OrderRepository orderRepository;
 
     @MockBean
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @MockBean
-    private IOrderMapper orderMapper;
+    IOrderMapper orderMapper;
 
     @MockBean
-    private OrderItemRepository orderItemRepository;
+    OrderItemRepository orderItemRepository;
 
     @MockBean
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
 
     @Autowired
     @InjectMocks
-    private OrderServiceImpl service;
+    OrderServiceImpl service;
 
 
     @Test
@@ -124,7 +124,6 @@ class OrderServiceImplTest {
 
         // then
         Mockito.verify(orderItemRepository, Mockito.times(1)).save(Mockito.any(OrderItem.class));
-        Mockito.verify(orderRepository, Mockito.times(1)).save(Mockito.any(Order.class));
     }
 
     @Test
@@ -200,7 +199,6 @@ class OrderServiceImplTest {
 
         // then
         Mockito.verify(orderItemRepository, Mockito.times(1)).save(Mockito.any(OrderItem.class));
-        Mockito.verify(orderRepository, Mockito.times(1)).save(Mockito.any(Order.class));
     }
 
     @Test
@@ -255,7 +253,7 @@ class OrderServiceImplTest {
         Mockito.when(orderMapper.convertToOrderDto(updatedOrderMock)).thenReturn(orderDtoMock);
 
         // when
-        OrderDto actual = service.checkoutOrder(orderDtoMock);
+        OrderDto actual = service.checkoutOrder(orderDtoMock.getOrderId(), orderDtoMock.getUserId());
         // then
         Assertions.assertEquals(OrderStatusCode.CML.toString(), actual.getOrderStatusCode());
     }
@@ -266,7 +264,7 @@ class OrderServiceImplTest {
         OrderDto orderDtoMock = OrderDto.builder().orderId(TestConstants.ORDER_ID)
                 .userId(TestConstants.USER_ID).build();
         Assertions.assertThrows(OrderNotFoundException.class, () -> {
-            service.checkoutOrder(orderDtoMock);
+            service.checkoutOrder(orderDtoMock.getOrderId(), orderDtoMock.getUserId());
         });
         Mockito.verify(orderRepository, Mockito.never()).save(Mockito.any(Order.class));
     }
